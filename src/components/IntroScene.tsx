@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useContext, useState, useCallback } from 'react';
+import { useContext, useState, useCallback, useEffect } from 'react';
 import { ProposalContext } from '../context/ProposalContext';
 import FloatingElements from './FloatingElements';
 
@@ -46,10 +46,14 @@ export default function IntroScene() {
   const headline = 'Every love story is special, but ours is my favorite.';
   const words = headline.split(' ');
 
-  /* Timers for second line + button */
-  const onHeadlineComplete = useCallback(() => {
-    setTimeout(() => setShowSecondLine(true), 3000);
-    setTimeout(() => setShowButton(true), 5000);
+  /* Auto-reveal second line + button */
+  useEffect(() => {
+    const t1 = setTimeout(() => setShowSecondLine(true), 2500);
+    const t2 = setTimeout(() => setShowButton(true), 4500);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   /* Button click handler */
@@ -80,7 +84,6 @@ export default function IntroScene() {
               transition: { staggerChildren: 0.12, delayChildren: 0.6 },
             },
           }}
-          onAnimationComplete={onHeadlineComplete}
         >
           {words.map((word, i) => (
             <motion.span
